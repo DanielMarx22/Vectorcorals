@@ -1,0 +1,30 @@
+services:
+  # Python Backend
+  api:
+    build: ./backend
+    container_name: vector_backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app # Syncs your code edits instantly
+      - /app/venv # Ignores your local venv folder to avoid errors
+    environment:
+      - ENV_TYPE=dev
+
+  # Next.js Frontend
+  web:
+    build:
+      context: ./frontend
+      target: deps # Uses the 'deps' stage we created for faster dev builds
+    container_name: vector_frontend
+    ports:
+      - "3000:3000"
+    command: npm run dev # Overrides the production command for hot-reloading
+    volumes:
+      - ./frontend:/app # Syncs your code edits instantly
+      - /app/node_modules # Uses the container's installed packages
+      - /app/.next # Stores build cache inside container
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - api
