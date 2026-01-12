@@ -4,8 +4,9 @@ import { useRef, useMemo, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
+import { GLTF } from "three-stdlib";
 
-// --- SHADER (Same as before, no changes needed here) ---
+// --- SHADER (Your exact shader) ---
 const LivingTentacleMaterial = new THREE.ShaderMaterial({
   uniforms: {
     uTime: { value: 0 },
@@ -91,18 +92,28 @@ const LivingTentacleMaterial = new THREE.ShaderMaterial({
   `,
 });
 
+// FIX 1: TYPE DEFINITION (Solves "Property geometry does not exist")
+type GLTFResult = GLTF & {
+  nodes: {
+    [name: string]: THREE.Mesh;
+  };
+  materials: {
+    [name: string]: THREE.Material;
+  };
+};
+
 export function RealisticTorch() {
-  const { nodes } = useGLTF("/holygrail.glb?v=fixGap");
+  // Use the Custom Type
+  const { nodes } = useGLTF("/holygrail.glb?v=fixGap") as unknown as GLTFResult;
   const meshRef = useRef<THREE.InstancedMesh>(null);
 
-  // FIX 1: Reduced Count drastically (was 450 -> now 180)
-  // This removes the "blob" look and lets light pass between tentacles
   const COUNT = 180;
 
   const geometries = useMemo(() => {
-    const allMeshes = Object.values(nodes).filter((n: any) => n.isMesh);
+    // Filter ensures we only sort Meshes
+    const allMeshes = Object.values(nodes).filter((n) => n.isMesh);
     allMeshes.sort(
-      (a: any, b: any) =>
+      (a, b) =>
         b.geometry.attributes.position.count -
         a.geometry.attributes.position.count
     );
@@ -127,10 +138,9 @@ export function RealisticTorch() {
       const angle = Math.random() * Math.PI * 2;
       const r = Math.pow(Math.random(), 0.6) * 0.7;
 
-      // FIX 2: Variable Deep Spawn Height
-      // Instead of spawning at 0.5 (flat), we spawn between 0.3 and 0.45.
-      // This pushes them DEEP inside the cup, hiding the "floating" bottom.
-      // The randomness (0.15 variance) prevents a visible "line" where they all start.
+      // FIX 2: ALIGNMENT
+      // Since Base is at 0,0,0, we spawn tentacles slightly ABOVE 0
+      // (0.3) so they look like they are inside the cup.
       const deepSpawnY = 0.3 + Math.random() * 0.15;
 
       dummy.position.set(Math.cos(angle) * r, deepSpawnY, Math.sin(angle) * r);
@@ -142,9 +152,8 @@ export function RealisticTorch() {
         (Math.random() - 0.5) * 0.4 - Math.cos(angle) * lean
       );
 
-      // Scale Adjusted slightly for lower count
       const height = 0.7 + Math.random() * 0.6;
-      const thickness = 0.6 + Math.random() * 0.3; // Slightly fatter since there are fewer
+      const thickness = 0.6 + Math.random() * 0.3;
       dummy.scale.set(thickness, height, thickness);
 
       dummy.updateMatrix();
@@ -155,8 +164,11 @@ export function RealisticTorch() {
 
   useFrame((state) => {
     if (meshRef.current) {
-      meshRef.current.material.uniforms.uTime.value =
-        state.clock.getElapsedTime();
+      // FIX 3: TYPE CASTING (Solves "Property uniforms does not exist")
+      const mat = meshRef.current.material as THREE.ShaderMaterial;
+      if (mat.uniforms) {
+        mat.uniforms.uTime.value = state.clock.getElapsedTime();
+      }
     }
   });
 
@@ -171,7 +183,9 @@ export function RealisticTorch() {
       {geometries.base && (
         <mesh
           geometry={geometries.base}
-          position={[0, -0.5, 0]}
+          // FIX 4: POSITION
+          // Reset to [0,0,0] so it aligns with the tentacles again
+          position={[0, 0, 0]}
           material={skeletonMaterial}
         />
       )}
