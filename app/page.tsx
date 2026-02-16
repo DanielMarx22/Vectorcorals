@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useScroll, useTransform, useMotionTemplate } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring, useInView } from "framer-motion";
 import LightPillar from "@/components/LightPillar";
 import SplitText from "@/components/SplitText";
 import BlurText from "@/components/BlurText";
@@ -13,26 +13,40 @@ import { ReactLenis } from 'lenis/react';
 export default function Home() {
   const containerRef = useRef(null);
   const videoRef = useRef(null);
+  const particlesRef = useRef(null);
+  const lightPillarRef = useRef(null);
 
-  // --- SHOWCASE ANIMATION HOOKS ---
+  // --- ONLY RUN HEAVY COMPONENTS WHEN THEY ARE NEAR THE VIEWPORT ---
+  // LightPillar: huge element, disable when far out of view (margin negative)
+  const isLightPillarInView = useInView(lightPillarRef, {
+    once: false,
+    amount: 0,
+    margin: "-50% 0px -50% 0px"  // only render when within 50% of viewport top/bottom
+  });
+
+  // Particles: only render when the section is visible
+  const isParticlesInView = useInView(particlesRef, { once: false, amount: 0.1 });
+
+  // --- SMOOTH SCROLL PROGRESS (prevents jank) ---
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
+  const smoothProgress = useSpring(scrollYProgress, { damping: 20, stiffness: 100 });
 
-  const scale = useTransform(scrollYProgress, [0, 0.6, 1], [1, 2.5, 2.5]);
-  const imageOpacity = useTransform(scrollYProgress, [0, 0.15, 0.6, 0.85, 1], [0, 1, 1, 0, 0]);
-  const blurRaw = useTransform(scrollYProgress, [0.6, 0.85, 1], [0, 40, 40]);
-  const imageBlur = useMotionTemplate`blur(${blurRaw}px)`;
-  const bgOpacity = useTransform(scrollYProgress, [0, 0.15, 1], [0, 1, 1]);
-  const footerOpacity = useTransform(scrollYProgress, [0.75, 0.9, 1], [0, 1, 1]);
-  const footerY = useTransform(scrollYProgress, [0.75, 0.9, 1], [50, 0, 0]);
+  // --- SHOWCASE ANIMATIONS (corrected: image starts fully visible) ---
+  const scale = useTransform(smoothProgress, [0, 0.6, 1], [1, 1.3, 1.3]);
+  const imageOpacity = useTransform(smoothProgress, [0, 0.6, 0.85, 1], [1, 1, 0, 0]); // No initial fade‑in
+  const bgOpacity = useTransform(smoothProgress, [0, 0.15, 1], [0, 1, 1]);
+  const footerOpacity = useTransform(smoothProgress, [0.75, 0.9, 1], [0, 1, 1]);
+  const footerY = useTransform(smoothProgress, [0.75, 0.9, 1], [50, 0, 0]);
 
-  // --- VIDEO PARALLAX HOOK ---
-  const { scrollYProgress: videoScroll } = useScroll({
+  // --- VIDEO PARALLAX (smoothed) ---
+  const { scrollYProgress: videoScrollRaw } = useScroll({
     target: videoRef,
     offset: ["start end", "end start"],
   });
+  const videoScroll = useSpring(videoScrollRaw, { damping: 20, stiffness: 100 });
   const videoY = useTransform(videoScroll, [0, 1], ["-15%", "15%"]);
 
   return (
@@ -44,11 +58,12 @@ export default function Home() {
         {/* COMBINED HERO & ETHOS WRAPPER */}
         <div className="relative w-full overflow-hidden">
 
+          {/* Background grid – always visible, cheap */}
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] z-0" />
 
-          {/* LIGHT PILLAR */}
-          <div className="absolute -top-[100vh] left-0 w-full h-[300vh] z-0 pointer-events-none">
-            <LightPillar />
+          {/* LIGHT PILLAR – only active when near viewport */}
+          <div ref={lightPillarRef} className="absolute -top-[100vh] left-0 w-full h-[300vh] z-0 pointer-events-none">
+            {isLightPillarInView && <LightPillar />}
           </div>
 
           {/* BOTTOM FADE TO BLACK */}
@@ -110,9 +125,8 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-b from-zinc-950 via-transparent to-zinc-950" />
         </section>
 
-        {/* 4. THE VALUE (IMPROVED CAROUSEL) */}
+        {/* 4. THE VALUE */}
         <section className="py-32 overflow-hidden bg-zinc-950 relative flex items-center">
-          {/* Changed the mask to aggressively fade the edges of the text to black so it looks like a true rolling cylinder */}
           <div className="absolute inset-0 bg-zinc-950 z-10 pointer-events-none [mask-image:linear-gradient(to_right,black_0%,transparent_15%,transparent_85%,black_100%)]" />
           <ScrollVelocity
             texts={["HIGH END LPS • BOUTIQUE QUALITY • RARE MORPHS • "]}
@@ -121,37 +135,35 @@ export default function Home() {
           />
         </section>
 
-        {/* 5. THE SWARM (IMPROVED PARTICLES & TEXT LAYER) */}
-        <section className="relative h-[90vh] flex flex-col items-center justify-center bg-zinc-950 overflow-hidden z-20">
-
-          {/* Added a radial mask. Particles will now smoothly dissolve/blur out before hitting the edges of the container */}
+        {/* 5. THE SWARM */}
+        <section ref={particlesRef} className="relative h-[90vh] flex flex-col items-center justify-center bg-zinc-950 overflow-hidden z-20">
           <div className="absolute inset-0 z-0 opacity-50 [mask-image:radial-gradient(ellipse_80%_80%_at_50%_50%,#000_40%,transparent_100%)]">
-            <Particles
-              particleColors={['#a855f7', '#3b82f6']}
-              particleCount={500}
-              particleSpread={7}
-              speed={0.15}
-              moveParticlesOnHover={true}
-            />
+            {isParticlesInView && (
+              <Particles
+                particleColors={['#a855f7', '#3b82f6']}
+                particleCount={150}
+                particleSpread={7}
+                speed={0.15}
+                moveParticlesOnHover={true}
+              />
+            )}
           </div>
-
-          {/* Removed mix-blend, boosted z-index to 30, and added heavy shadows to keep text cleanly IN FRONT */}
           <div className="z-30 text-center pointer-events-none relative">
             <h2 className="text-sm tracking-[0.4em] font-mono text-zinc-300 mb-4 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">INTERACTIVE</h2>
             <p className="text-4xl md:text-5xl font-light tracking-wide text-white drop-shadow-[0_4px_12px_rgba(0,0,0,1)]">Disturb the flow.</p>
           </div>
-
           <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-b from-transparent to-zinc-950 z-10 pointer-events-none" />
         </section>
 
-        {/* 6 & 7. SHOWCASE REVEAL & FOOTER */}
-        <section ref={containerRef} className="relative h-[400vh] z-10">
+        {/* 6 & 7. SHOWCASE REVEAL & FOOTER (now with correct image timing) */}
+        <section ref={containerRef} className="relative h-[400vh] z-10 will-change-transform">
           <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden bg-zinc-950">
             <motion.div style={{ opacity: bgOpacity }} className="absolute inset-0 z-0 bg-black" />
 
+            {/* TEXT REVEAL / FOOTER LAYER – same scroll‑linked animation, now smooth */}
             <motion.div
               style={{ opacity: footerOpacity, y: footerY }}
-              className="absolute inset-0 z-0 flex flex-col items-center justify-between py-24 px-8 pointer-events-auto"
+              className="absolute inset-0 z-10 flex flex-col items-center justify-between py-24 px-8 pointer-events-auto"
             >
               <div className="flex-1 flex flex-col items-center justify-center text-center w-full max-w-4xl">
                 <p className="font-mono text-xs tracking-[0.3em] text-zinc-500 uppercase mb-8">Ready to Collect</p>
@@ -173,13 +185,15 @@ export default function Home() {
               </div>
             </motion.div>
 
+            {/* CORAL IMAGE – visible from the start (opacity 1) */}
             <motion.div
-              style={{ scale, opacity: imageOpacity, filter: imageBlur }}
-              className="absolute inset-0 z-10 w-full h-full origin-center pointer-events-none will-change-transform"
+              style={{ scale, opacity: imageOpacity }}
+              className="absolute inset-0 z-20 w-full h-full origin-center pointer-events-none transform-gpu will-change-[transform,opacity]"
             >
-              <img src="/coral-macro.jpg" alt="Premium Coral Focus" className="object-cover w-full h-full" />
-              <div className="absolute inset-0 bg-gradient-to-b from-zinc-950 via-transparent to-zinc-950" />
+              <div className="w-full h-full bg-[url('/coral-macro.jpg')] bg-cover bg-center bg-no-repeat" />
+              <div className="absolute inset-0 bg-gradient-to-b from-zinc-950 via-transparent to-zinc-950 pointer-events-none" />
             </motion.div>
+
           </div>
         </section>
 
