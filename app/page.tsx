@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 import { motion, useScroll, useTransform, useSpring, useInView } from "framer-motion";
-import LightPillar from "@/components/LightPillar";
+import ColorBends from "@/components/ColorBends";
 import SplitText from "@/components/SplitText";
 import BlurText from "@/components/BlurText";
 import ScrollVelocity from "@/components/ScrollVelocity";
@@ -14,34 +14,30 @@ export default function Home() {
   const containerRef = useRef(null);
   const videoRef = useRef(null);
   const particlesRef = useRef(null);
-  const lightPillarRef = useRef(null);
+  const colorBendsRef = useRef(null);
 
-  // --- ONLY RUN HEAVY COMPONENTS WHEN THEY ARE NEAR THE VIEWPORT ---
-  // LightPillar: huge element, disable when far out of view (margin negative)
-  const isLightPillarInView = useInView(lightPillarRef, {
+  const isColorBendsInView = useInView(colorBendsRef, {
     once: false,
     amount: 0,
-    margin: "-50% 0px -50% 0px"  // only render when within 50% of viewport top/bottom
+    margin: "-50% 0px -50% 0px"
   });
 
-  // Particles: only render when the section is visible
+  const MemoizedColorBends = useMemo(() => <ColorBends />, []);
+
   const isParticlesInView = useInView(particlesRef, { once: false, amount: 0.1 });
 
-  // --- SMOOTH SCROLL PROGRESS (prevents jank) ---
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
   const smoothProgress = useSpring(scrollYProgress, { damping: 20, stiffness: 100 });
 
-  // --- SHOWCASE ANIMATIONS (corrected: image starts fully visible) ---
   const scale = useTransform(smoothProgress, [0, 0.6, 1], [1, 1.3, 1.3]);
-  const imageOpacity = useTransform(smoothProgress, [0, 0.6, 0.85, 1], [1, 1, 0, 0]); // No initial fade‑in
+  const imageOpacity = useTransform(smoothProgress, [0, 0.6, 0.85, 1], [1, 1, 0, 0]);
   const bgOpacity = useTransform(smoothProgress, [0, 0.15, 1], [0, 1, 1]);
   const footerOpacity = useTransform(smoothProgress, [0.75, 0.9, 1], [0, 1, 1]);
   const footerY = useTransform(smoothProgress, [0.75, 0.9, 1], [50, 0, 0]);
 
-  // --- VIDEO PARALLAX (smoothed) ---
   const { scrollYProgress: videoScrollRaw } = useScroll({
     target: videoRef,
     offset: ["start end", "end start"],
@@ -55,21 +51,19 @@ export default function Home() {
 
         <FishCursor />
 
-        {/* COMBINED HERO & ETHOS WRAPPER */}
         <div className="relative w-full overflow-hidden">
-
-          {/* Background grid – always visible, cheap */}
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] z-0" />
 
-          {/* LIGHT PILLAR – only active when near viewport */}
-          <div ref={lightPillarRef} className="absolute -top-[100vh] left-0 w-full h-[300vh] z-0 pointer-events-none">
-            {isLightPillarInView && <LightPillar />}
+          <div
+            ref={colorBendsRef}
+            className="absolute -top-[100vh] left-0 w-full h-[300vh] z-0 pointer-events-none transform-gpu will-change-transform"
+            style={{ backfaceVisibility: 'hidden', perspective: 1000 }}
+          >
+            {isColorBendsInView && MemoizedColorBends}
           </div>
 
-          {/* BOTTOM FADE TO BLACK */}
           <div className="absolute inset-x-0 bottom-0 h-[40vh] bg-gradient-to-b from-transparent via-zinc-950/90 to-zinc-950 z-[1]" />
 
-          {/* 1. THE SURFACE */}
           <section className="relative h-screen w-full flex flex-col items-center justify-center z-10 border-none">
             <div className="text-center pointer-events-none flex flex-col items-center">
               <p className="tracking-[0.5em] text-xs text-purple-300/70 uppercase mb-6 font-mono drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">Premium Aquaculture</p>
@@ -81,7 +75,6 @@ export default function Home() {
             </div>
           </section>
 
-          {/* 2. THE ETHOS */}
           <section className="min-h-[80vh] flex flex-col items-center justify-center px-6 md:px-24 relative z-10 pb-20 border-none">
             <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent pointer-events-none -z-10" />
 
@@ -112,9 +105,8 @@ export default function Home() {
             </motion.div>
           </section>
 
-        </div> {/* END COMBINED WRAPPER */}
+        </div>
 
-        {/* 3. THE SOURCE */}
         <section ref={videoRef} className="relative h-screen w-full overflow-hidden bg-zinc-950">
           <motion.video
             style={{ y: videoY }}
@@ -125,7 +117,6 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-b from-zinc-950 via-transparent to-zinc-950" />
         </section>
 
-        {/* 4. THE VALUE */}
         <section className="py-32 overflow-hidden bg-zinc-950 relative flex items-center">
           <div className="absolute inset-0 bg-zinc-950 z-10 pointer-events-none [mask-image:linear-gradient(to_right,black_0%,transparent_15%,transparent_85%,black_100%)]" />
           <ScrollVelocity
@@ -135,7 +126,6 @@ export default function Home() {
           />
         </section>
 
-        {/* 5. THE SWARM */}
         <section ref={particlesRef} className="relative h-[90vh] flex flex-col items-center justify-center bg-zinc-950 overflow-hidden z-20">
           <div className="absolute inset-0 z-0 opacity-50 [mask-image:radial-gradient(ellipse_80%_80%_at_50%_50%,#000_40%,transparent_100%)]">
             {isParticlesInView && (
@@ -155,12 +145,10 @@ export default function Home() {
           <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-b from-transparent to-zinc-950 z-10 pointer-events-none" />
         </section>
 
-        {/* 6 & 7. SHOWCASE REVEAL & FOOTER (now with correct image timing) */}
         <section ref={containerRef} className="relative h-[400vh] z-10 will-change-transform">
           <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden bg-zinc-950">
             <motion.div style={{ opacity: bgOpacity }} className="absolute inset-0 z-0 bg-black" />
 
-            {/* TEXT REVEAL / FOOTER LAYER – same scroll‑linked animation, now smooth */}
             <motion.div
               style={{ opacity: footerOpacity, y: footerY }}
               className="absolute inset-0 z-10 flex flex-col items-center justify-between py-24 px-8 pointer-events-auto"
@@ -185,7 +173,6 @@ export default function Home() {
               </div>
             </motion.div>
 
-            {/* CORAL IMAGE – visible from the start (opacity 1) */}
             <motion.div
               style={{ scale, opacity: imageOpacity }}
               className="absolute inset-0 z-20 w-full h-full origin-center pointer-events-none transform-gpu will-change-[transform,opacity]"
