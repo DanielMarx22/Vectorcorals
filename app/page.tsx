@@ -120,7 +120,7 @@ export default function Home() {
         <section className="py-32 overflow-hidden bg-zinc-950 relative flex items-center">
           <div className="absolute inset-0 bg-zinc-950 z-10 pointer-events-none [mask-image:linear-gradient(to_right,black_0%,transparent_15%,transparent_85%,black_100%)]" />
           <ScrollVelocity
-            texts={["HIGH END LPS • BOUTIQUE QUALITY • RARE MORPHS • "]}
+            texts={["HIGH END ZOAS • HIGH END MUSHROOMS • RARE MORPHS • "]}
             velocity={45}
             className="text-6xl md:text-8xl font-black tracking-tighter text-zinc-700/60 uppercase italic"
           />
@@ -140,7 +140,7 @@ export default function Home() {
           </div>
           <div className="z-30 text-center pointer-events-none relative">
             <h2 className="text-sm tracking-[0.4em] font-mono text-zinc-300 mb-4 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">INTERACTIVE</h2>
-            <p className="text-4xl md:text-5xl font-light tracking-wide text-white drop-shadow-[0_4px_12px_rgba(0,0,0,1)]">Disturb the flow.</p>
+            <p className="text-4xl md:text-5xl font-light tracking-wide text-white drop-shadow-[0_4px_12px_rgba(0,0,0,1)]"></p>
           </div>
           <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-b from-transparent to-zinc-950 z-10 pointer-events-none" />
         </section>
@@ -159,7 +159,7 @@ export default function Home() {
                 <div className="flex flex-col md:flex-row gap-8 md:gap-16 w-full justify-center border-t border-white/10 pt-12">
                   <a href="mailto:contact@vectorcorals.com" className="group flex flex-col items-center">
                     <span className="text-sm font-mono text-zinc-500 mb-2 group-hover:text-purple-400 transition-colors">INQUIRIES</span>
-                    <span className="text-2xl font-light text-zinc-300 group-hover:text-white transition-colors">contact@vectorcorals.com</span>
+                    <span className="text-2xl font-light text-zinc-300 group-hover:text-white transition-colors">testemail@gmail.com</span>
                   </a>
                   <button className="group flex flex-col items-center">
                     <span className="text-sm font-mono text-zinc-500 mb-2 group-hover:text-blue-400 transition-colors">PAYMENT</span>
