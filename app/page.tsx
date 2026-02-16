@@ -1,65 +1,188 @@
-import Image from "next/image";
+"use client";
+
+import { useRef } from "react";
+import { motion, useScroll, useTransform, useMotionTemplate } from "framer-motion";
+import LightPillar from "@/components/LightPillar";
+import SplitText from "@/components/SplitText";
+import BlurText from "@/components/BlurText";
+import ScrollVelocity from "@/components/ScrollVelocity";
+import Particles from "@/components/Particles";
+import FishCursor from "@/components/FishCursor";
+import { ReactLenis } from 'lenis/react';
 
 export default function Home() {
+  const containerRef = useRef(null);
+  const videoRef = useRef(null);
+  const ethosRef = useRef(null);
+
+  // --- ETHOS SCROLL HOOKS (FIXED OFFSET) ---
+  // Changed "start 40%" to "start 80%" so it reaches 100% opacity almost immediately upon entering the screen
+  const { scrollYProgress: ethosScroll } = useScroll({
+    target: ethosRef,
+    offset: ["start 95%", "start 80%"],
+  });
+  const ethosOpacity = useTransform(ethosScroll, [0, 1], [0, 1]);
+  const ethosY = useTransform(ethosScroll, [0, 1], [40, 0]);
+
+  // --- SHOWCASE ANIMATION HOOKS ---
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
+
+  const scale = useTransform(scrollYProgress, [0, 0.6, 1], [1, 2.5, 2.5]);
+  const imageOpacity = useTransform(scrollYProgress, [0, 0.15, 0.6, 0.85, 1], [0, 1, 1, 0, 0]);
+  const blurRaw = useTransform(scrollYProgress, [0.6, 0.85, 1], [0, 40, 40]);
+  const imageBlur = useMotionTemplate`blur(${blurRaw}px)`;
+  const bgOpacity = useTransform(scrollYProgress, [0, 0.15, 1], [0, 1, 1]);
+  const footerOpacity = useTransform(scrollYProgress, [0.75, 0.9, 1], [0, 1, 1]);
+  const footerY = useTransform(scrollYProgress, [0.75, 0.9, 1], [50, 0, 0]);
+
+  // --- VIDEO PARALLAX HOOK ---
+  const { scrollYProgress: videoScroll } = useScroll({
+    target: videoRef,
+    offset: ["start end", "end start"],
+  });
+  const videoY = useTransform(videoScroll, [0, 1], ["-15%", "15%"]);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <ReactLenis root options={{ lerp: 0.04, duration: 1.5, smoothWheel: true }}>
+      <main className="bg-zinc-950 text-slate-50 selection:bg-purple-500/30 cursor-none relative">
+
+        <FishCursor />
+
+        {/* COMBINED HERO & ETHOS WRAPPER */}
+        <div className="relative w-full overflow-hidden">
+
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] z-0" />
+
+          {/* LIGHT PILLAR */}
+          <div className="absolute -top-[100vh] left-0 w-full h-[300vh] z-0 pointer-events-none">
+            <LightPillar />
+          </div>
+
+          {/* BOTTOM FADE TO BLACK */}
+          <div className="absolute inset-x-0 bottom-0 h-[40vh] bg-gradient-to-b from-transparent via-zinc-950/90 to-zinc-950 z-[1]" />
+
+          {/* 1. THE SURFACE */}
+          <section className="relative h-screen w-full flex flex-col items-center justify-center z-10 border-none">
+            <div className="text-center pointer-events-none flex flex-col items-center">
+              <p className="tracking-[0.5em] text-xs text-purple-300/70 uppercase mb-6 font-mono drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">Premium Aquaculture</p>
+              <SplitText
+                text="VECTOR CORALS"
+                className="text-7xl md:text-[9rem] font-black tracking-tighter mix-blend-screen leading-none"
+                delay={40}
+              />
+            </div>
+          </section>
+
+          {/* 2. THE ETHOS */}
+          <section ref={ethosRef} className="min-h-[80vh] flex flex-col items-center justify-center px-6 md:px-24 relative z-10 pb-20 border-none">
+            <motion.div
+              style={{ opacity: ethosOpacity, y: ethosY }}
+              className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24 w-full max-w-7xl items-center relative z-20"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+              <div className="text-left">
+                <BlurText
+                  text="Sustainably"
+                  delay={30}
+                  className="text-5xl md:text-7xl font-light text-white block drop-shadow-[0_4px_16px_rgba(0,0,0,1)]"
+                />
+                <BlurText
+                  text="Aquacultured."
+                  delay={30}
+                  className="text-5xl md:text-7xl font-bold text-white block italic drop-shadow-[0_4px_16px_rgba(0,0,0,1)]"
+                />
+              </div>
+              <div className="border-l border-white/50 pl-8 md:pl-12 py-4">
+                <p className="text-white text-lg md:text-xl font-medium leading-relaxed drop-shadow-[0_4px_12px_rgba(0,0,0,1)]">
+                  We don't just grow corals. We engineer ecosystems. Cultivating extreme vibration and coloration through uncompromising stability and strict biological patience.
+                </p>
+              </div>
+            </motion.div>
+          </section>
+
+        </div> {/* END COMBINED WRAPPER */}
+
+        {/* 3. THE SOURCE */}
+        <section ref={videoRef} className="relative h-screen w-full overflow-hidden bg-zinc-950 border-y border-white/5">
+          <motion.video
+            style={{ y: videoY }}
+            autoPlay loop muted playsInline
+            className="absolute inset-0 w-full h-[130%] -top-[15%] object-cover opacity-80 will-change-transform"
+            src="/tank-video.mp4"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-zinc-950 via-transparent to-zinc-950" />
+        </section>
+
+        {/* 4. THE VALUE */}
+        <section className="py-32 overflow-hidden bg-zinc-950 relative">
+          <div className="absolute inset-0 bg-zinc-950/80 z-10 pointer-events-none [mask-image:linear-gradient(to_right,black,transparent_20%,transparent_80%,black)]" />
+          <ScrollVelocity
+            texts={["HIGH END LPS • BOUTIQUE QUALITY • RARE MORPHS • "]}
+            velocity={45}
+            className="text-6xl md:text-8xl font-black tracking-tighter text-zinc-800/80 uppercase italic"
+          />
+        </section>
+
+        {/* 5. THE SWARM */}
+        <section className="relative h-[90vh] flex flex-col items-center justify-center bg-zinc-950 overflow-hidden z-20 border-t border-white/5">
+          <div className="absolute inset-0 z-0 opacity-40">
+            <Particles
+              particleColors={['#a855f7', '#3b82f6']}
+              particleCount={500}
+              particleSpread={7}
+              speed={0.15}
+              moveParticlesOnHover={true}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+          </div>
+          <div className="z-10 text-center pointer-events-none mix-blend-difference">
+            <h2 className="text-sm tracking-[0.4em] font-mono text-zinc-400 mb-4">INTERACTIVE</h2>
+            <p className="text-4xl md:text-5xl font-light tracking-wide text-zinc-200">Disturb the flow.</p>
+          </div>
+          <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-b from-transparent to-zinc-950 z-[1] pointer-events-none" />
+        </section>
+
+        {/* 6 & 7. SHOWCASE REVEAL & FOOTER */}
+        <section ref={containerRef} className="relative h-[400vh] z-10">
+          <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden bg-zinc-950">
+            <motion.div style={{ opacity: bgOpacity }} className="absolute inset-0 z-0 bg-black" />
+
+            <motion.div
+              style={{ opacity: footerOpacity, y: footerY }}
+              className="absolute inset-0 z-0 flex flex-col items-center justify-between py-24 px-8 pointer-events-auto"
+            >
+              <div className="flex-1 flex flex-col items-center justify-center text-center w-full max-w-4xl">
+                <p className="font-mono text-xs tracking-[0.3em] text-zinc-500 uppercase mb-8">Ready to Collect</p>
+                <h2 className="text-6xl md:text-[8rem] font-black tracking-tighter mb-12 text-zinc-100 leading-none">Acquire.</h2>
+                <div className="flex flex-col md:flex-row gap-8 md:gap-16 w-full justify-center border-t border-white/10 pt-12">
+                  <a href="mailto:contact@vectorcorals.com" className="group flex flex-col items-center">
+                    <span className="text-sm font-mono text-zinc-500 mb-2 group-hover:text-purple-400 transition-colors">INQUIRIES</span>
+                    <span className="text-2xl font-light text-zinc-300 group-hover:text-white transition-colors">contact@vectorcorals.com</span>
+                  </a>
+                  <button className="group flex flex-col items-center">
+                    <span className="text-sm font-mono text-zinc-500 mb-2 group-hover:text-blue-400 transition-colors">PAYMENT</span>
+                    <span className="text-2xl font-light text-zinc-300 group-hover:text-white transition-colors">Venmo QR</span>
+                  </button>
+                </div>
+              </div>
+              <div className="w-full flex justify-between text-xs font-mono text-zinc-600 uppercase tracking-widest mt-auto">
+                <span>© {new Date().getFullYear()} Vector Corals</span>
+                <span>Tuscaloosa, AL</span>
+              </div>
+            </motion.div>
+
+            <motion.div
+              style={{ scale, opacity: imageOpacity, filter: imageBlur }}
+              className="absolute inset-0 z-10 w-full h-full origin-center pointer-events-none will-change-transform"
+            >
+              <img src="/coral-macro.jpg" alt="Premium Coral Focus" className="object-cover w-full h-full" />
+              <div className="absolute inset-0 bg-gradient-to-b from-zinc-950 via-transparent to-zinc-950" />
+            </motion.div>
+          </div>
+        </section>
+
       </main>
-    </div>
+    </ReactLenis>
   );
 }
