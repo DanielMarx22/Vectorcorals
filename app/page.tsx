@@ -13,16 +13,6 @@ import { ReactLenis } from 'lenis/react';
 export default function Home() {
   const containerRef = useRef(null);
   const videoRef = useRef(null);
-  const ethosRef = useRef(null);
-
-  // --- ETHOS SCROLL HOOKS (FIXED OFFSET) ---
-  // Changed "start 40%" to "start 80%" so it reaches 100% opacity almost immediately upon entering the screen
-  const { scrollYProgress: ethosScroll } = useScroll({
-    target: ethosRef,
-    offset: ["start 95%", "start 80%"],
-  });
-  const ethosOpacity = useTransform(ethosScroll, [0, 1], [0, 1]);
-  const ethosY = useTransform(ethosScroll, [0, 1], [40, 0]);
 
   // --- SHOWCASE ANIMATION HOOKS ---
   const { scrollYProgress } = useScroll({
@@ -77,9 +67,14 @@ export default function Home() {
           </section>
 
           {/* 2. THE ETHOS */}
-          <section ref={ethosRef} className="min-h-[80vh] flex flex-col items-center justify-center px-6 md:px-24 relative z-10 pb-20 border-none">
+          <section className="min-h-[80vh] flex flex-col items-center justify-center px-6 md:px-24 relative z-10 pb-20 border-none">
+            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent pointer-events-none -z-10" />
+
             <motion.div
-              style={{ opacity: ethosOpacity, y: ethosY }}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
               className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24 w-full max-w-7xl items-center relative z-20"
             >
               <div className="text-left">
@@ -105,7 +100,7 @@ export default function Home() {
         </div> {/* END COMBINED WRAPPER */}
 
         {/* 3. THE SOURCE */}
-        <section ref={videoRef} className="relative h-screen w-full overflow-hidden bg-zinc-950 border-y border-white/5">
+        <section ref={videoRef} className="relative h-screen w-full overflow-hidden bg-zinc-950">
           <motion.video
             style={{ y: videoY }}
             autoPlay loop muted playsInline
@@ -115,19 +110,22 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-b from-zinc-950 via-transparent to-zinc-950" />
         </section>
 
-        {/* 4. THE VALUE */}
-        <section className="py-32 overflow-hidden bg-zinc-950 relative">
-          <div className="absolute inset-0 bg-zinc-950/80 z-10 pointer-events-none [mask-image:linear-gradient(to_right,black,transparent_20%,transparent_80%,black)]" />
+        {/* 4. THE VALUE (IMPROVED CAROUSEL) */}
+        <section className="py-32 overflow-hidden bg-zinc-950 relative flex items-center">
+          {/* Changed the mask to aggressively fade the edges of the text to black so it looks like a true rolling cylinder */}
+          <div className="absolute inset-0 bg-zinc-950 z-10 pointer-events-none [mask-image:linear-gradient(to_right,black_0%,transparent_15%,transparent_85%,black_100%)]" />
           <ScrollVelocity
             texts={["HIGH END LPS • BOUTIQUE QUALITY • RARE MORPHS • "]}
             velocity={45}
-            className="text-6xl md:text-8xl font-black tracking-tighter text-zinc-800/80 uppercase italic"
+            className="text-6xl md:text-8xl font-black tracking-tighter text-zinc-700/60 uppercase italic"
           />
         </section>
 
-        {/* 5. THE SWARM */}
-        <section className="relative h-[90vh] flex flex-col items-center justify-center bg-zinc-950 overflow-hidden z-20 border-t border-white/5">
-          <div className="absolute inset-0 z-0 opacity-40">
+        {/* 5. THE SWARM (IMPROVED PARTICLES & TEXT LAYER) */}
+        <section className="relative h-[90vh] flex flex-col items-center justify-center bg-zinc-950 overflow-hidden z-20">
+
+          {/* Added a radial mask. Particles will now smoothly dissolve/blur out before hitting the edges of the container */}
+          <div className="absolute inset-0 z-0 opacity-50 [mask-image:radial-gradient(ellipse_80%_80%_at_50%_50%,#000_40%,transparent_100%)]">
             <Particles
               particleColors={['#a855f7', '#3b82f6']}
               particleCount={500}
@@ -136,11 +134,14 @@ export default function Home() {
               moveParticlesOnHover={true}
             />
           </div>
-          <div className="z-10 text-center pointer-events-none mix-blend-difference">
-            <h2 className="text-sm tracking-[0.4em] font-mono text-zinc-400 mb-4">INTERACTIVE</h2>
-            <p className="text-4xl md:text-5xl font-light tracking-wide text-zinc-200">Disturb the flow.</p>
+
+          {/* Removed mix-blend, boosted z-index to 30, and added heavy shadows to keep text cleanly IN FRONT */}
+          <div className="z-30 text-center pointer-events-none relative">
+            <h2 className="text-sm tracking-[0.4em] font-mono text-zinc-300 mb-4 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">INTERACTIVE</h2>
+            <p className="text-4xl md:text-5xl font-light tracking-wide text-white drop-shadow-[0_4px_12px_rgba(0,0,0,1)]">Disturb the flow.</p>
           </div>
-          <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-b from-transparent to-zinc-950 z-[1] pointer-events-none" />
+
+          <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-b from-transparent to-zinc-950 z-10 pointer-events-none" />
         </section>
 
         {/* 6 & 7. SHOWCASE REVEAL & FOOTER */}
