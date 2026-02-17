@@ -12,7 +12,7 @@ import ColorBends from "@/components/ColorBends";
 import SplitText from "@/components/SplitText";
 import BlurText from "@/components/BlurText";
 import ScrollVelocity from "@/components/ScrollVelocity";
-import StoryScroll from "@/components/StoryScroll"; // <-- Import the new component
+import StoryScroll from "@/components/StoryScroll";
 import FishCursor from "@/components/FishCursor";
 import { ReactLenis } from "lenis/react";
 
@@ -29,25 +29,35 @@ export default function Home() {
 
   const MemoizedColorBends = useMemo(() => <ColorBends />, []);
 
+  // --- FOOTER ANIMATION TIMELINE ---
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
+
   const smoothProgress = useSpring(scrollYProgress, {
     damping: 20,
     stiffness: 100,
   });
 
-  const scale = useTransform(smoothProgress, [0, 0.6, 1], [1, 1.3, 1.3]);
+  // 1. FASTER ZOOM: Finishes at 35% instead of 60%
+  const scale = useTransform(smoothProgress, [0, 0.35, 1], [1, 1.3, 1.3]);
+
+  // 2. FASTER FADE OUT: Image starts fading right after the zoom finishes
   const imageOpacity = useTransform(
     smoothProgress,
-    [0, 0.6, 0.85, 1],
-    [1, 1, 0, 0],
+    [0, 0.35, 0.6, 1],
+    [1, 1, 0, 0]
   );
-  const bgOpacity = useTransform(smoothProgress, [0, 0.15, 1], [0, 1, 1]);
-  const footerOpacity = useTransform(smoothProgress, [0.75, 0.9, 1], [0, 1, 1]);
-  const footerY = useTransform(smoothProgress, [0.75, 0.9, 1], [50, 0, 0]);
 
+  // 3. FASTER BG FADE
+  const bgOpacity = useTransform(smoothProgress, [0, 0.1, 1], [0, 1, 1]);
+
+  // 4. FASTER TEXT REVEAL: Text comes up at 50% instead of 75%
+  const footerOpacity = useTransform(smoothProgress, [0.5, 0.7, 1], [0, 1, 1]);
+  const footerY = useTransform(smoothProgress, [0.5, 0.7, 1], [50, 0, 0]);
+
+  // --- VIDEO ANIMATION ---
   const { scrollYProgress: videoScrollRaw } = useScroll({
     target: videoRef,
     offset: ["start end", "end start"],
@@ -150,9 +160,11 @@ export default function Home() {
         {/* --- NEW PARALLAX STORY SECTION --- */}
         <StoryScroll />
 
+        {/* --- FOOTER SECTION --- */}
         <section
           ref={containerRef}
-          className="relative h-[400vh] z-10 will-change-transform"
+          // REDUCED HEIGHT: 250vh instead of 400vh makes the whole sequence much faster
+          className="relative h-[250vh] z-10 will-change-transform"
         >
           <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden bg-zinc-950">
             <motion.div
