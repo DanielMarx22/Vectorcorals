@@ -314,7 +314,7 @@ export default function StoryScroll() {
               Patience
             </h2>
             <p className="text-xl md:text-2xl text-zinc-300 font-light drop-shadow-md">
-              We see technology as a tool, but human touch must drive creativity.
+              Strict biological patience to cultivate extreme coloration.
             </p>
           </motion.div>
 
@@ -328,7 +328,7 @@ export default function StoryScroll() {
               Resilience
             </h2>
             <p className="text-xl md:text-2xl text-zinc-300 font-light drop-shadow-md">
-              Strict biological patience to cultivate extreme coloration.
+              Resolve for only the best, both in care and in product.
             </p>
           </motion.div>
 

@@ -24,7 +24,7 @@ export default function Home() {
   const isColorBendsInView = useInView(colorBendsRef, {
     once: false,
     amount: 0,
-    margin: "-50% 0px -50% 0px",
+    margin: "200% 0px 200% 0px", // Keeps animation mounted while scrolling down
   });
 
   const MemoizedColorBends = useMemo(() => <ColorBends />, []);
@@ -40,20 +40,16 @@ export default function Home() {
     stiffness: 100,
   });
 
-  // 1. FASTER ZOOM: Finishes at 35% instead of 60%
   const scale = useTransform(smoothProgress, [0, 0.35, 1], [1, 1.3, 1.3]);
 
-  // 2. FASTER FADE OUT: Image starts fading right after the zoom finishes
   const imageOpacity = useTransform(
     smoothProgress,
     [0, 0.35, 0.6, 1],
     [1, 1, 0, 0]
   );
 
-  // 3. FASTER BG FADE
   const bgOpacity = useTransform(smoothProgress, [0, 0.1, 1], [0, 1, 1]);
 
-  // 4. FASTER TEXT REVEAL: Text comes up at 50% instead of 75%
   const footerOpacity = useTransform(smoothProgress, [0.5, 0.7, 1], [0, 1, 1]);
   const footerY = useTransform(smoothProgress, [0.5, 0.7, 1], [50, 0, 0]);
 
@@ -70,38 +66,60 @@ export default function Home() {
 
   return (
     <ReactLenis root options={{ lerp: 0.04, duration: 1.5, smoothWheel: true }}>
-      <main className="bg-zinc-950 text-slate-50 selection:bg-purple-500/30 cursor-none relative">
+      <main className="bg-zinc-950 text-slate-50 selection:bg-purple-500/30 cursor-none relative ">
         <FishCursor />
 
-        <div className="relative w-full overflow-hidden">
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] z-0" />
+        {/* --- EXPANDED TOP WRAPPER --- */}
+        <div className="relative w-full overflow-hidden z-0">
+          {/* FIXED: Subtle Grid Pattern REMOVED */}
 
+          {/* --- COLOR BENDS BACKGROUND --- */}
           <div
             ref={colorBendsRef}
-            className="absolute -top-[100vh] left-0 w-full h-[300vh] z-0 pointer-events-none transform-gpu will-change-transform"
+            // FIXED: Adjusted mask to start fading out earlier (at 60% instead of 85%) for a longer, smoother transition.
+            className="absolute -top-[100vh] left-0 w-full h-[290vh] z-0 pointer-events-none transform-gpu will-change-transform [mask-image:linear-gradient(to_bottom,black_60%,transparent_100%)]"
             style={{ backfaceVisibility: "hidden", perspective: 1000 }}
           >
             {isColorBendsInView && MemoizedColorBends}
           </div>
 
-          <div className="absolute inset-x-0 bottom-0 h-[40vh] bg-gradient-to-b from-transparent via-zinc-950/90 to-zinc-950 z-[1]" />
-
+          {/* --- HERO SECTION --- */}
           <section className="relative h-screen w-full flex flex-col items-center justify-center z-10 border-none">
             <div className="text-center pointer-events-none flex flex-col items-center">
-              <p className="tracking-[0.5em] text-xs text-purple-300/70 uppercase mb-6 font-mono drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+              <motion.p
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 0.5 }}
+                className="tracking-[0.5em] text-xs text-purple-300/70 uppercase mb-6 font-mono drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
+              >
                 Premium Aquaculture
-              </p>
-              <SplitText
-                text="VECTOR CORALS"
-                className="text-7xl md:text-[9rem] font-black tracking-tighter mix-blend-screen leading-none"
-                delay={40}
-              />
+              </motion.p>
+
+              {/* Cinematic Flare Reveal */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, filter: "blur(15px)", y: 20 }}
+                animate={{ opacity: 1, scale: 1, filter: "blur(0px)", y: 0 }}
+                transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+                className="relative"
+              >
+                {/* Breathing purple aura behind the title */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: [0, 0.3, 0.15] }}
+                  transition={{ duration: 3, delay: 0.8, repeat: Infinity, repeatType: "reverse" }}
+                  className="absolute inset-0 bg-purple-500/20 blur-[80px] rounded-[100%] z-0"
+                />
+                <SplitText
+                  text="VECTOR CORALS"
+                  className="text-7xl md:text-[9rem] font-black tracking-tighter mix-blend-screen leading-none relative z-10 drop-shadow-[0_0_25px_rgba(255,255,255,0.1)]"
+                  delay={40}
+                />
+              </motion.div>
             </div>
           </section>
 
+          {/* --- SUSTAINABLY SECTION --- */}
           <section className="min-h-[80vh] flex flex-col items-center justify-center px-6 md:px-24 relative z-10 pb-20 border-none">
-            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent pointer-events-none -z-10" />
-
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -123,36 +141,40 @@ export default function Home() {
               </div>
               <div className="border-l border-white/50 pl-8 md:pl-12 py-4">
                 <p className="text-white text-lg md:text-xl font-medium leading-relaxed drop-shadow-[0_4px_12px_rgba(0,0,0,1)]">
-                  We don't just grow corals. We engineer ecosystems. Cultivating
-                  extreme vibration and coloration through uncompromising
-                  stability and strict biological patience.
+                  We don't just grow corals. We engineer ecosystems. By combining
+                  modern technology with the life inside the reef ecosystem,
+                  we cultivate vibration and coloration through uncompromising long-term
+                  stability and biological patience.
                 </p>
               </div>
             </motion.div>
           </section>
+
+          {/* --- VIDEO SECTION --- */}
+          <section
+            ref={videoRef}
+            // FIXED: Adjusted mask to fade in more slowly at the top (stretched to 30% instead of 15%) for a smoother blend.
+            className="relative h-screen w-full bg-transparent z-10 [mask-image:linear-gradient(to_bottom,transparent_0%,black_30%,black_85%,transparent_100%)]"
+          >
+            <motion.video
+              style={{ y: videoY }}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 w-full h-[130%] -top-[15%] object-cover opacity-100 will-change-transform"
+              src="/tank-video.mp4"
+            />
+            {/* Blends the bottom of the video cleanly into the solid black ticker section */}
+            <div className="absolute inset-x-0 bottom-0 h-[30vh] bg-gradient-to-b from-transparent to-zinc-950 pointer-events-none" />
+          </section>
         </div>
 
-        <section
-          ref={videoRef}
-          className="relative h-screen w-full overflow-hidden bg-zinc-950"
-        >
-          <motion.video
-            style={{ y: videoY }}
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute inset-0 w-full h-[130%] -top-[15%] object-cover opacity-80 will-change-transform"
-            src="/tank-video.mp4"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-zinc-950 via-transparent to-zinc-950" />
-        </section>
-
-        <section className="py-32 overflow-hidden bg-zinc-950 relative flex items-center">
+        <section className="py-32 overflow-hidden bg-zinc-950 relative flex items-center z-10">
           <div className="absolute inset-0 bg-zinc-950 z-10 pointer-events-none [mask-image:linear-gradient(to_right,black_0%,transparent_15%,transparent_85%,black_100%)]" />
           <ScrollVelocity
-            texts={["HIGH END LPS • BOUTIQUE QUALITY • RARE MORPHS • "]}
-            velocity={45}
+            texts={["HIGH END ZOAS, MUSHROOMS, EUPHYLLIA, AND MORE • "]}
+            velocity={90}
             className="text-6xl md:text-8xl font-black tracking-tighter text-zinc-700/60 uppercase italic"
           />
         </section>
@@ -163,7 +185,6 @@ export default function Home() {
         {/* --- FOOTER SECTION --- */}
         <section
           ref={containerRef}
-          // REDUCED HEIGHT: 250vh instead of 400vh makes the whole sequence much faster
           className="relative h-[250vh] z-10 will-change-transform"
         >
           <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden bg-zinc-950">
@@ -195,14 +216,6 @@ export default function Home() {
                       contact@vectorcorals.com
                     </span>
                   </a>
-                  <button className="group flex flex-col items-center">
-                    <span className="text-sm font-mono text-zinc-500 mb-2 group-hover:text-blue-400 transition-colors">
-                      PAYMENT
-                    </span>
-                    <span className="text-2xl font-light text-zinc-300 group-hover:text-white transition-colors">
-                      Venmo QR
-                    </span>
-                  </button>
                 </div>
               </div>
               <div className="w-full flex justify-between text-xs font-mono text-zinc-600 uppercase tracking-widest mt-auto">
