@@ -62,7 +62,11 @@ const generateGallery = (sources: string[]) => {
       src,
       left: `${baseLeft + jitter}%`,
       top: `${index * 12.5 + Math.random() * 5}vh`,
-      width: `${scale * 14 + 16}vw`,
+
+      // FIXED: Swapped 'vw' for 'vmin'. This prevents images from infinitely scaling 
+      // horizontally on wide desktop monitors, completely fixing the massive overlap.
+      width: `${scale * 14 + 16}vmin`,
+
       speedFactor: scale * 0.2 + 0.6,
       darken: 1 - scale + 0.1,
       aspect: Math.random() > 0.5 ? "16/9" : "3/4",
@@ -186,6 +190,9 @@ export default function StoryScroll() {
             x: "-50%",
             y: "-50%",
             width: heroWidth,
+            // FIXED: Forces the hero image to start at a reasonable portrait width on mobile,
+            // but does nothing on desktop or during the final full-screen zoom.
+            minWidth: "min(60vw, 350px)",
             height: heroHeight,
             borderRadius: heroRadius,
             overflow: "hidden"
