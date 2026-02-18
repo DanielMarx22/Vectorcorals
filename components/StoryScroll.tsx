@@ -20,19 +20,14 @@ const GALLERY_IMAGE_SOURCES = [
   "/littleogbounce.JPEG",
   "/magiccarpet.JPEG",
   "/ogbounce.JPEG",
-  "/bigjawbreaker.JPEG",
-  "/bigjawbreaker.JPEG",
-  "/bigjawbreaker.JPEG",
-  "/bigjawbreaker.JPEG",
-  "/bigjawbreaker.JPEG",
-  "/bigjawbreaker.JPEG",
-  "/bigjawbreaker.JPEG",
-  "/bigjawbreaker.JPEG",
-  "/bigjawbreaker.JPEG",
-  "/bigjawbreaker.JPEG",
-  "/bigjawbreaker.JPEG",
-  "/bigjawbreaker.JPEG",
-  "/bigjawbreaker.JPEG",
+  "/bigutterchaos.JPEG",
+  "/eclectus.JPEG",
+  "/knickstorch.JPEG",
+  "/kryptonite.JPEG",
+  "/orangeyuma.JPEG",
+  "/greenbounce.JPEG",
+  "/uranium.JPEG",
+  "/whitezombie.JPEG",
   "/bigjawbreaker.JPEG",
   "/bigjawbreaker.JPEG",
   "/bigjawbreaker.JPEG",
@@ -80,17 +75,21 @@ const FloatingImage = ({
   mouseX,
   mouseY,
   hoveredId,
-  setHoveredId
+  setHoveredId,
 }: {
-  img: GalleryItemProps,
-  progress: MotionValue<number>,
-  totalVh: number,
-  mouseX: MotionValue<number>,
-  mouseY: MotionValue<number>,
-  hoveredId: number | null,
-  setHoveredId: (id: number | null) => void
+  img: GalleryItemProps;
+  progress: MotionValue<number>;
+  totalVh: number;
+  mouseX: MotionValue<number>;
+  mouseY: MotionValue<number>;
+  hoveredId: number | null;
+  setHoveredId: (id: number | null) => void;
 }) => {
-  const scrollY = useTransform(progress, [0, 1], ["0vh", `-${totalVh * img.speedFactor}vh`]);
+  const scrollY = useTransform(
+    progress,
+    [0, 1],
+    ["0vh", `-${totalVh * img.speedFactor}vh`],
+  );
 
   const moveRange = img.scale * 60;
   const x = useTransform(mouseX, [-1, 1], [moveRange, -moveRange]);
@@ -113,7 +112,7 @@ const FloatingImage = ({
         width: img.width,
         aspectRatio: img.aspect,
         y: scrollY,
-        zIndex: isHovered ? 50 : 1
+        zIndex: isHovered ? 50 : 1,
       }}
       className="absolute transform-gpu will-change-transform"
     >
@@ -203,47 +202,91 @@ export default function StoryScroll() {
   const heroTop = useTransform(
     smoothProgress,
     [p(heroEntranceStartVh), p(zoomStartVh)],
-    ["150%", "50%"]
+    ["150%", "50%"],
   );
 
   // 2. HERO HORIZONTAL ZOOM
-  const heroWidth = useTransform(smoothProgress, [p(zoomStartVh), p(zoomEndVh)], ["25vw", "100vw"]);
-  const heroHeight = useTransform(smoothProgress, [p(zoomStartVh), p(zoomEndVh)], ["45vh", "110vh"]);
-  const heroRadius = useTransform(smoothProgress, [p(zoomStartVh), p(zoomEndVh)], ["24px", "0px"]);
+  const heroWidth = useTransform(
+    smoothProgress,
+    [p(zoomStartVh), p(zoomEndVh)],
+    ["25vw", "100vw"],
+  );
+  const heroHeight = useTransform(
+    smoothProgress,
+    [p(zoomStartVh), p(zoomEndVh)],
+    ["45vh", "110vh"],
+  );
+  const heroRadius = useTransform(
+    smoothProgress,
+    [p(zoomStartVh), p(zoomEndVh)],
+    ["24px", "0px"],
+  );
 
   // Fade out gallery background
-  const galleryOpacity = useTransform(smoothProgress, [p(zoomStartVh - 30), p(zoomStartVh)], [1, 0]);
+  const galleryOpacity = useTransform(
+    smoothProgress,
+    [p(zoomStartVh - 30), p(zoomStartVh)],
+    [1, 0],
+  );
 
   // 3. VERTICAL PAN & OVERLAY
-  const imagePanY = useTransform(smoothProgress, [p(zoomStartVh), 1], ["0%", "-30%"]);
-  const overlayOpacity = useTransform(smoothProgress, [p(zoomStartVh), p(zoomStartVh + 30)], [0, 0.6]);
+  const imagePanY = useTransform(
+    smoothProgress,
+    [p(zoomStartVh), 1],
+    ["0%", "-30%"],
+  );
+  const overlayOpacity = useTransform(
+    smoothProgress,
+    [p(zoomStartVh), p(zoomStartVh + 30)],
+    [0, 0.6],
+  );
 
   // 4. TEXT PHASES
   const text1Opacity = useTransform(
     smoothProgress,
-    [0, p(text1StartVh), p(text1StartVh) + p(12), p(text1EndVh) - p(12), p(text1EndVh), 1],
-    [0, 0, 1, 1, 0, 0]
+    [
+      0,
+      p(text1StartVh),
+      p(text1StartVh) + p(12),
+      p(text1EndVh) - p(12),
+      p(text1EndVh),
+      1,
+    ],
+    [0, 0, 1, 1, 0, 0],
   );
 
   const text2Opacity = useTransform(
     smoothProgress,
-    [0, p(text2StartVh), p(text2StartVh) + p(12), p(text2EndVh) - p(12), p(text2EndVh), 1],
-    [0, 0, 1, 1, 0, 0]
+    [
+      0,
+      p(text2StartVh),
+      p(text2StartVh) + p(12),
+      p(text2EndVh) - p(12),
+      p(text2EndVh),
+      1,
+    ],
+    [0, 0, 1, 1, 0, 0],
   );
 
   const text3Opacity = useTransform(
     smoothProgress,
     [0, p(text3StartVh), p(text3StartVh) + p(12), 1],
-    [0, 0, 1, 1]
+    [0, 0, 1, 1],
   );
 
   return (
-    <section ref={containerRef} style={{ height: `${totalVh}vh` }} className="relative bg-zinc-950">
+    <section
+      ref={containerRef}
+      style={{ height: `${totalVh}vh` }}
+      className="relative bg-zinc-950"
+    >
       <div className="sticky top-0 h-screen w-full overflow-hidden">
-
         {/* --- LAYER 1: THE FLOATING GALLERY --- */}
         {isMounted && (
-          <motion.div style={{ opacity: galleryOpacity }} className="absolute inset-0 z-0">
+          <motion.div
+            style={{ opacity: galleryOpacity }}
+            className="absolute inset-0 z-0"
+          >
             {galleryItems.map((img) => (
               <FloatingImage
                 key={img.id}
@@ -271,7 +314,7 @@ export default function StoryScroll() {
             minWidth: "min(60vw, 350px)",
             height: heroHeight,
             borderRadius: heroRadius,
-            overflow: "hidden"
+            overflow: "hidden",
           }}
         >
           <div className="w-full h-full relative bg-zinc-900 pointer-events-auto">
@@ -289,12 +332,16 @@ export default function StoryScroll() {
 
         {/* --- LAYER 3: TEXT CONTENT --- */}
         <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none px-6">
-
-          <motion.div style={{ opacity: text1Opacity }} className="absolute text-center max-w-4xl">
+          <motion.div
+            style={{ opacity: text1Opacity }}
+            className="absolute text-center max-w-4xl"
+          >
             <div className="flex items-center justify-center gap-4 mb-4">
               <span className="text-zinc-400 font-mono">01</span>
               <span className="h-[1px] w-12 bg-zinc-600"></span>
-              <span className="text-white font-bold tracking-widest uppercase">VISION</span>
+              <span className="text-white font-bold tracking-widest uppercase">
+                VISION
+              </span>
             </div>
             <h2 className="text-5xl md:text-[7rem] font-bold text-white mb-6 tracking-tighter drop-shadow-lg">
               Innovation
@@ -304,11 +351,16 @@ export default function StoryScroll() {
             </p>
           </motion.div>
 
-          <motion.div style={{ opacity: text2Opacity }} className="absolute text-center max-w-4xl">
+          <motion.div
+            style={{ opacity: text2Opacity }}
+            className="absolute text-center max-w-4xl"
+          >
             <div className="flex items-center justify-center gap-4 mb-4">
               <span className="text-zinc-400 font-mono">02</span>
               <span className="h-[1px] w-12 bg-zinc-600"></span>
-              <span className="text-white font-bold tracking-widest uppercase">PROCESS</span>
+              <span className="text-white font-bold tracking-widest uppercase">
+                PROCESS
+              </span>
             </div>
             <h2 className="text-5xl md:text-[7rem] font-bold text-white mb-6 tracking-tighter drop-shadow-lg">
               Patience
@@ -318,11 +370,16 @@ export default function StoryScroll() {
             </p>
           </motion.div>
 
-          <motion.div style={{ opacity: text3Opacity }} className="absolute text-center max-w-4xl">
+          <motion.div
+            style={{ opacity: text3Opacity }}
+            className="absolute text-center max-w-4xl"
+          >
             <div className="flex items-center justify-center gap-4 mb-4">
               <span className="text-zinc-400 font-mono">03</span>
               <span className="h-[1px] w-12 bg-zinc-600"></span>
-              <span className="text-white font-bold tracking-widest uppercase">RESULT</span>
+              <span className="text-white font-bold tracking-widest uppercase">
+                RESULT
+              </span>
             </div>
             <h2 className="text-5xl md:text-[7rem] font-bold text-white mb-6 tracking-tighter drop-shadow-lg">
               Resilience
@@ -331,7 +388,6 @@ export default function StoryScroll() {
               Resolve for only the best, both in care and in product.
             </p>
           </motion.div>
-
         </div>
       </div>
     </section>
