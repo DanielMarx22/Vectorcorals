@@ -46,7 +46,7 @@ export default function Contact() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, delay: 0.2 }}
-                            href="https://instagram.com/vectorcorals"
+                            href="https://instagram.com/rodsandreefs"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="group relative flex flex-col items-center justify-center p-6 sm:p-16 rounded-3xl bg-zinc-900/20 border border-white/5 overflow-hidden backdrop-blur-md hover:border-purple-500/40 transition-all duration-500 cursor-none"
@@ -64,7 +64,7 @@ export default function Contact() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, delay: 0.3 }}
-                            href="https://facebook.com/vectorcorals"
+                            href="https://facebook.com/profile.php?id=100088449560840"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="group relative flex flex-col items-center justify-center p-6 sm:p-16 rounded-3xl bg-zinc-900/20 border border-white/5 overflow-hidden backdrop-blur-md hover:border-blue-500/40 transition-all duration-500 cursor-none"
