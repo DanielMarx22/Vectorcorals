@@ -5,7 +5,7 @@ import CollectionClient from "@/components/CollectionClient";
 export const revalidate = 0;
 
 export default async function Collection() {
-    const corals = await client.fetch(`*[_type == "coral" && status == "in-stock"]{
+  const corals = await client.fetch(`*[_type == "coral" && status == "in-stock"]{
     "id": _id,
     name,
     "slug": slug.current, 
@@ -17,5 +17,5 @@ export default async function Collection() {
     status
   }`);
 
-    return <CollectionClient corals={corals} />;
+  return <CollectionClient corals={corals} />;
 }
