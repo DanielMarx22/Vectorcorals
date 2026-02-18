@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
+    "@sanity/image-url": "^1.2.0",
+    "@sanity/vision": "^4.22.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "gsap": "^3.14.2",
@@ -17,10 +19,13 @@
     "lucide-react": "^0.564.0",
     "motion": "^12.34.1",
     "next": "16.1.6",
+    "next-sanity": "^11.6.12",
     "ogl": "^1.0.11",
     "radix-ui": "^1.4.3",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "sanity": "^4.22.0",
+    "styled-components": "^6.3.9",
     "tailwind-merge": "^3.4.1",
     "three": "^0.167.1"
   },

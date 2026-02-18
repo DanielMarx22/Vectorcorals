@@ -28,9 +28,19 @@ const GALLERY_IMAGE_SOURCES = [
   "/greenbounce.JPEG",
   "/uranium.JPEG",
   "/whitezombie.JPEG",
-  "/bigjawbreaker.JPEG",
-  "/bigjawbreaker.JPEG",
-  "/bigjawbreaker.JPEG",
+  "/atomicbroccoli.JPEG",
+  "/dragonlady.JPEG",
+  "/flashbounce.JPEG",
+  "/gmk.JPEG",
+  "/greenbounc.JPEG",
+  "/greenyuma.JPEG",
+  "/illuminati.JPEG",
+  "/mindtrick.JPEG",
+  "/strat.JPEG",
+  "/yodas.JPEG",
+  "/zoas.JPEG",
+  "/ogbounce.JPEG",
+  "/zoas.JPEG",
 ];
 
 interface GalleryItemProps {

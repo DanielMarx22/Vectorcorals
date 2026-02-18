@@ -314,6 +314,7 @@ const GlassSurface: React.FC<GlassSurfaceProps> = ({
   return (
     <div
       ref={containerRef}
+      suppressHydrationWarning={true} // <--- Add this line
       className={`${glassSurfaceClasses} ${focusVisibleClasses} ${className}`}
       style={getContainerStyles()}
     >
