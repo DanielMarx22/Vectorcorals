@@ -145,25 +145,24 @@ export default function Home() {
               </div>
             </div>
 
-            {/* 2. IMAGE 1 LAYER (Horizontal - Uncropped) */}
+            {/* 2. IMAGE 1 LAYER */}
             <div className="relative h-[200vh] w-full -mt-[100vh] z-20">
               <div className="sticky top-0 h-screen w-full bg-zinc-950 flex items-center justify-center shadow-[0_-20px_50px_rgba(0,0,0,0.8)]">
-                <img src="/8gallonfront.JPEG" alt="Source Image 1" className="w-full h-full object-contain" />
+                <img src="/8gallonfront.JPEG" alt="Source Image 1" className="w-full h-full object-contain md:object-cover" />
               </div>
             </div>
 
             {/* 3. IMAGE 2 LAYER */}
             <div className="relative h-[200vh] w-full -mt-[100vh] z-30">
-              <div className="sticky top-0 h-screen w-full shadow-[0_-20px_50px_rgba(0,0,0,0.8)]">
-                <img src="/cubefront.JPEG" alt="Source Image 2" className="absolute inset-0 w-full h-full object-cover" />
+              <div className="sticky top-0 h-screen w-full bg-zinc-950 flex items-center justify-center shadow-[0_-20px_50px_rgba(0,0,0,0.8)]">
+                <img src="/cubefront.JPEG" alt="Source Image 2" className="w-full h-full object-contain md:object-cover" />
               </div>
             </div>
 
             {/* 4. IMAGE 3 LAYER (Final Layer) */}
             <div className="relative h-screen w-full -mt-[100vh] z-40">
-              <div className="sticky top-0 h-screen w-full shadow-[0_-20px_50px_rgba(0,0,0,0.8)]">
-                <img src="/cubetopdown.JPEG" alt="Source Image 3" className="absolute inset-0 w-full h-full object-cover" />
-                {/* Bottom fade into the ticker section */}
+              <div className="sticky top-0 h-screen w-full bg-zinc-950 flex items-center justify-center shadow-[0_-20px_50px_rgba(0,0,0,0.8)]">
+                <img src="/cubetopdown.JPEG" alt="Source Image 3" className="w-full h-full object-contain md:object-cover" />
                 <div className="absolute inset-x-0 bottom-0 h-[30vh] bg-gradient-to-b from-transparent to-zinc-950 pointer-events-none z-50" />
               </div>
             </div>

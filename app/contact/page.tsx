@@ -39,7 +39,7 @@ export default function Contact() {
                         For bundle deals, shipping quotes, or questions about specific pieces, send a direct message on your preferred platform.
                     </motion.p>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl relative z-20 pointer-events-auto">
+                    <div className="grid grid-cols-2 gap-3 md:gap-6 w-full max-w-4xl relative z-20 pointer-events-auto">
 
                         {/* INSTAGRAM CARD */}
                         <motion.a
@@ -49,20 +49,14 @@ export default function Contact() {
                             href="https://instagram.com/vectorcorals"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group relative flex flex-col items-center justify-center p-16 rounded-3xl bg-zinc-900/20 border border-white/5 overflow-hidden backdrop-blur-md hover:border-purple-500/40 transition-all duration-500 cursor-none"
+                            className="group relative flex flex-col items-center justify-center p-6 sm:p-16 rounded-3xl bg-zinc-900/20 border border-white/5 overflow-hidden backdrop-blur-md hover:border-purple-500/40 transition-all duration-500 cursor-none"
                         >
-                            {/* Ambient Hover Glow */}
                             <div className="absolute inset-0 bg-purple-500/0 group-hover:bg-purple-500/10 transition-colors duration-700 blur-2xl" />
-
-                            <div className="relative z-10 p-5 rounded-full bg-zinc-950/50 border border-white/10 group-hover:scale-110 group-hover:border-purple-500/50 transition-all duration-500 mb-6 shadow-xl">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10 text-zinc-400 group-hover:text-purple-400 transition-colors duration-500">
-                                    <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
-                                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                                    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
-                                </svg>
+                            <div className="relative z-10 p-4 sm:p-5 rounded-full bg-zinc-950/50 border border-white/10 group-hover:scale-110 group-hover:border-purple-500/50 transition-all duration-500 mb-4 sm:mb-6 shadow-xl">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 sm:w-10 sm:h-10 text-zinc-400 group-hover:text-purple-400 transition-colors duration-500"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
                             </div>
-                            <h3 className="relative z-10 text-2xl font-black tracking-tight text-white mb-2">Instagram</h3>
-                            <p className="relative z-10 text-xs font-mono text-zinc-500 uppercase tracking-widest group-hover:text-purple-300 transition-colors">@vectorcorals</p>
+                            <h3 className="relative z-10 text-lg sm:text-2xl font-black tracking-tight text-white mb-1 sm:mb-2">Instagram</h3>
+                            <p className="relative z-10 text-[9px] sm:text-xs font-mono text-zinc-500 uppercase tracking-widest group-hover:text-purple-300 transition-colors">@vectorcorals</p>
                         </motion.a>
 
                         {/* FACEBOOK CARD */}
@@ -73,18 +67,14 @@ export default function Contact() {
                             href="https://facebook.com/vectorcorals"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group relative flex flex-col items-center justify-center p-16 rounded-3xl bg-zinc-900/20 border border-white/5 overflow-hidden backdrop-blur-md hover:border-blue-500/40 transition-all duration-500 cursor-none"
+                            className="group relative flex flex-col items-center justify-center p-6 sm:p-16 rounded-3xl bg-zinc-900/20 border border-white/5 overflow-hidden backdrop-blur-md hover:border-blue-500/40 transition-all duration-500 cursor-none"
                         >
-                            {/* Ambient Hover Glow */}
                             <div className="absolute inset-0 bg-blue-500/0 group-hover:bg-blue-500/10 transition-colors duration-700 blur-2xl" />
-
-                            <div className="relative z-10 p-5 rounded-full bg-zinc-950/50 border border-white/10 group-hover:scale-110 group-hover:border-blue-500/50 transition-all duration-500 mb-6 shadow-xl">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10 text-zinc-400 group-hover:text-blue-400 transition-colors duration-500">
-                                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                                </svg>
+                            <div className="relative z-10 p-4 sm:p-5 rounded-full bg-zinc-950/50 border border-white/10 group-hover:scale-110 group-hover:border-blue-500/50 transition-all duration-500 mb-4 sm:mb-6 shadow-xl">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 sm:w-10 sm:h-10 text-zinc-400 group-hover:text-blue-400 transition-colors duration-500"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
                             </div>
-                            <h3 className="relative z-10 text-2xl font-black tracking-tight text-white mb-2">Facebook</h3>
-                            <p className="relative z-10 text-xs font-mono text-zinc-500 uppercase tracking-widest group-hover:text-blue-300 transition-colors">Vector Corals</p>
+                            <h3 className="relative z-10 text-lg sm:text-2xl font-black tracking-tight text-white mb-1 sm:mb-2">Facebook</h3>
+                            <p className="relative z-10 text-[9px] sm:text-xs font-mono text-zinc-500 uppercase tracking-widest group-hover:text-blue-300 transition-colors">Vector Corals</p>
                         </motion.a>
 
                     </div>

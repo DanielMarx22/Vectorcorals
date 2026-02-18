@@ -139,7 +139,7 @@ export default function CollectionClient({ corals }: { corals: any[] }) {
 
                     {/* RIGHT SIDE: Product Grid */}
                     <div className="flex-1">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
+                        <div className="grid grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
                             {filteredAndSortedCorals.length > 0 ? (
                                 filteredAndSortedCorals.map((product, index) => (
                                     <ProductCard
