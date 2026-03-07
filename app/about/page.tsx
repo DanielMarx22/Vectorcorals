@@ -66,7 +66,7 @@ export default function About() {
                             <h2 className="text-xs font-mono uppercase tracking-[0.3em] text-zinc-500">The Philosophy</h2>
                             <div className="text-zinc-300 text-lg md:text-xl font-light leading-relaxed">
                                 <p>
-                                    My pricing model is simple: it is based entirely on my personal attachment and current inventory. If a piece is abundant and I'm ready to move it, it will be priced below market value. If it is a piece I have a limited amount of, it is priced higher.
+                                    My pricing model is simple: it is based entirely on my personal attachment and current inventory. If a piece is abundant and I'm ready to move it, it will be priced below market value. If it is a piece I have a limited amount of or just like more, it is priced higher.
                                 </p>
                                 <p className="mt-4 text-white font-medium">
                                     That being said, everything has a price.
