@@ -357,7 +357,7 @@ export default function StoryScroll() {
               Innovation
             </h2>
             <p className="text-xl md:text-2xl text-zinc-300 font-light drop-shadow-md">
-              Vector Corals welcomes innovation through research and technology.
+              Vector Corals uses technology to enhance the reefing experience.
             </p>
           </motion.div>
 
@@ -376,7 +376,7 @@ export default function StoryScroll() {
               Patience
             </h2>
             <p className="text-xl md:text-2xl text-zinc-300 font-light drop-shadow-md">
-              Strict biological patience to cultivate extreme coloration.
+              Biological patience to cultivate vivid coloration.
             </p>
           </motion.div>
 
@@ -392,7 +392,7 @@ export default function StoryScroll() {
               </span>
             </div>
             <h2 className="text-5xl md:text-[7rem] font-bold text-white mb-6 tracking-tighter drop-shadow-lg">
-              Resilience
+              Quality
             </h2>
             <p className="text-xl md:text-2xl text-zinc-300 font-light drop-shadow-md">
               Resolve for only the best, both in care and in product.
